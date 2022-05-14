@@ -7,6 +7,11 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Home Page</h1>
+  {% for post in posts %}
+    <h1>{{post.title}}</h1>
+    <p> by:{{post.author}} on {{date_posted}}</p>
+    <p>{{post.content}}</p>
+
+  {% endfor %}
 </body>
 </html>
