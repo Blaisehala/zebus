@@ -12,29 +12,10 @@ from zebus.models import User,Post
 
 
 
-
-posts = [
-  
-  {
-    'author': 'Blaise Hala',
-    'title': 'Blog Post 1',
-    'content': 'First post content ',
-    'date_posted':'April 2015'
-  },
-
- {
-    'author': 'Odhis Mkuki',
-    'title': 'Blog Post 2',
-    'content': 'First post content',
-    'date_posted':'April 2014'
- }
-]
-
-
-
 @app.route('/')
 @app.route ('/home')
 def home():
+  posts=Post.query.all()
   return render_template ('home.html', posts=posts)
 
 
@@ -103,6 +84,9 @@ def account():
 def new_post():
   form = PostForm()
   if form.validate_on_submit():
+    post = Post(title=form.title.data, content=form.content.data, author=current_user)
+    db.session.add(post)
+    db.session.commit()
     flash('Your post has been created successfully!', 'info')
     return redirect (url_for("home"))
 
