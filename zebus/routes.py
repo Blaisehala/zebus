@@ -1,18 +1,34 @@
+from turtle import title
 from flask import render_template,url_for,flash,redirect, request,abort
 from flask_login import login_user,current_user, logout_user, login_required
 from zebus import app,db,bcrypt
 from zebus.forms import  RegistrationForm, LoginForm, PostForm
 
 
-
+import json
+import requests
+from zebus.models import User, Post,Quote
 
 from zebus.models import User,Post
 
 
-
+def get_quote():
+    url = 'http://quotes.stormconsultancy.co.uk/random.json'
+    req = requests.get(url)
+    data = req.json()
+    quote = Quote(data['quote'],data['author'])
+    return quote
 
 
 @app.route('/')
+@app.route('/about')
+def about():
+  quote = get_quote()
+  print(quote)
+  return render_template('about.html', title= 'About', quote=quote)
+
+
+
 @app.route ('/home')
 def home():
   posts=Post.query.all()
@@ -20,9 +36,7 @@ def home():
 
 
 
-@app.route('/about')
-def about():
-  return render_template('about.html', title= 'About')
+
 
 
 
@@ -117,5 +131,8 @@ def update_post(post_id):
      form.title.data = post.title
      form.content.data = post.content
    return render_template('create_post.html', title='Update post', form=form, legend='Update Post')
+
+
+
 
 
